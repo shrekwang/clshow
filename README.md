@@ -2,13 +2,28 @@
 
 clshow is a clojure library for showing class members infomation. clshow use
 [paranamer](https://github.com/paul-hammant/paranamer "paranamer") to 
-extract parameter name of methods, and print all members infomation with a nice format.
+extract parameter name of methods, and print all members infomation in a nice format.
 
 ## Installation
 
-Add the following dependency to your `project.clj` file:
 
+```clojure
+
+    ;Add the following dependency to your project.clj file:
     [clshow "1.0"]
+
+    ;and in your clj code
+    (ns my.ns
+        (:require [clshow.core :refer :all]))
+
+    ;or customize clshow in your ~/.lein/profiles.clj 
+
+    :dependencies [[clshow "1.0"]]
+    :repl-options { :init (do
+                            (require 'clshow.core)
+                            (clshow.core/set-jdk-doc-loc! (java.io.File. "/Users/admin/jdk-7u80-docs-all.zip"))) }
+
+```
 
 
 ## Usage
