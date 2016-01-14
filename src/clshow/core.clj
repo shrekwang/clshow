@@ -3,10 +3,7 @@
            [java.lang.reflect Method  Field Constructor]
            java.net.URL
            java.io.File)
-  (:require [airtake-tools.tools :as tools]
-            [clojure.java.io  :as io]
-            [clojure.string  :as s]
-            [clojure.pprint :refer [pprint]]))
+  (:require [clojure.string  :as s]))
 
 (defn- create-jdk-paranamer [jdk-doc-loc] 
   (CachingParanamer.  

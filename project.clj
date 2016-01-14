@@ -1,4 +1,4 @@
-(defproject clshow "1.0"
+(defproject clshow "1.0.1"
   :description "A Clojure library for showing class members"
   :url "https://github.com/shrekwang/clshow"
   :license {:name "Eclipse Public License"
