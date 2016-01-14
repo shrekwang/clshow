@@ -10,15 +10,14 @@ extract parameter name of methods, and print all members infomation in a nice fo
 ```clojure
 
     ;Add the following dependency to your project.clj file:
-    [clshow "1.0"]
+    [clshow "1.0.1"]
 
     ;and in your clj code
     (ns my.ns
         (:require [clshow.core :refer :all]))
 
     ;or customize clshow in your ~/.lein/profiles.clj 
-
-    :dependencies [[clshow "1.0"]]
+    :dependencies [[clshow "1.0.1"]]
     :repl-options { :init (do
                             (require 'clshow.core)
                             (clshow.core/set-jdk-doc-loc! (java.io.File. "/Users/admin/jdk-7u80-docs-all.zip"))) }
@@ -34,8 +33,11 @@ extract parameter name of methods, and print all members infomation in a nice fo
   ;if no local zip provided, clshow will use online javadoc location as default
   (set-jdk-doc-loc! (File. "/Users/admin/jdk-7u80-docs-all.zip"))
 
+  (show java.io.File)
+  (show (io/file "aa.txt"))
+
+  (show String)
   (show "str-value")
-  ;
   ; ======== fields ==========
   ; Comparator CASE_INSENSITIVE_ORDER
   ; 
@@ -43,22 +45,11 @@ extract parameter name of methods, and print all members infomation in a nice fo
   ; char         charAt(int index)                                                             
   ; int          codePointAt(int index)                                                        
   ; int          codePointBefore(int index)                                                    
-  ; int          codePointCount(int beginIndex,int endIndex)                                   
-  ; int          compareTo(Object arg0)                                                        
-  ; int          compareTo(String anotherString)                                               
-  ; int          compareToIgnoreCase(String str)                                               
   ; String       concat(String str)                                                            
-  ; boolean      contains(CharSequence s)                                                      
-  ; boolean      contentEquals(CharSequence cs)                                                
   ; boolean      contentEquals(StringBuffer sb)                                                
-  ; String       copyValueOf(char[] data)                                                      
-  ; String       copyValueOf(char[] data,int offset,int count)                                 
   ; boolean      endsWith(String suffix)                                                       
-  ; boolean      equals(Object anObject)                                                       
-  ; boolean      equalsIgnoreCase(String anotherString)                                        
   ; String       format(Locale arg0,String arg1,Object[] arg2)                                 
   ; String       format(String arg0,Object[] arg1)   
-  ; .....
   ; .....
 
 ```
