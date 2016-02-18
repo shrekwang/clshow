@@ -97,9 +97,33 @@
         (println "\n======== constructors ==========")
         (print-members (map get-desc (.getConstructors c)))))))
 
+(defn fn-var? [v]
+  (let [f @v]
+    (or (contains? (meta v) :arglists)
+        (fn? f)
+        (instance? clojure.lang.MultiFn f))))
+
+(defn cheat-sheet [ns]
+  (let [nsname (str ns)
+        vars (vals (ns-publics ns))
+        {funs true
+         defs false} (group-by fn-var? vars)
+        fmeta (map meta funs)
+        dmeta (map meta defs)
+        flen (apply max 0 (map (comp count str :name) fmeta))
+        fplen (apply max 0 (map (comp count #(clojure.string/join \space (:arglists %))) fmeta))
+        dnames (map #(str nsname \/ (:name %)) dmeta)
+        fnames (map #(format (str "%s/%-" flen "s %-" fplen "s %s") nsname (:name %)
+                             (clojure.string/join \space (:arglists %))
+                             (.replace (clojure.string/join (take 60 (or (:doc %) "") )) "\n" " "))
+                    fmeta)
+        lines (concat (sort dnames) (sort fnames))]
+    (println (clojure.string/join \newline lines))))
+
 
 (comment 
 
+  (cheat-sheet 'clojure.java.io)
   (set-jdk-doc-loc! (File. "/Users/wangsn/jdk-7u80-docs-all.zip"))
   (show java.util.HashSet)
 
