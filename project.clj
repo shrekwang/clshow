@@ -1,7 +1,8 @@
-(defproject clshow "1.0.2"
+(defproject clshow "1.1.0"
   :description "A Clojure library for showing class members"
   :url "https://github.com/shrekwang/clshow"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [clj-http "3.4.1"]
                  [com.thoughtworks.paranamer/paranamer "2.8"]])

@@ -3,7 +3,10 @@
            [java.lang.reflect Method  Field Constructor]
            java.net.URL
            java.io.File)
-  (:require [clojure.string  :as s]))
+  (:require [clojure.string  :as s]
+            [clojure.pprint :refer [pprint]]
+            [clojure.edn :as edn]
+            [clj-http.client :as client]))
 
 (defn- create-jdk-paranamer [jdk-doc-loc] 
   (CachingParanamer.  
@@ -34,7 +37,8 @@
   (reset! jdk-paranamer (create-jdk-paranamer loc)))
 
 
-(defn- get-params-desc [m]
+(defn- get-params-desc 
+  [m]
   (s/join 
     "," 
     (map #(s/join " " %) 
@@ -44,7 +48,8 @@
                        (into [] (.lookupParameterNames (deref *paranamer*) m)))))))
 
 
-(defn print-members [members]
+(defn print-members 
+  [members]
   (let [ks (keys (first members))
         widths (map (fn [k]
                       (apply max (map #(count (str % )) (map k  members))))
@@ -103,7 +108,8 @@
         (fn? f)
         (instance? clojure.lang.MultiFn f))))
 
-(defn cheat-sheet [ns]
+(defn cheat-sheet 
+  [ns]
   (let [nsname (str ns)
         vars (vals (ns-publics ns))
         {funs true
@@ -121,11 +127,41 @@
     (println (clojure.string/join \newline lines))))
 
 
+(defn cddoc 
+  [n v]
+  (let [page-data (some #(if (.startsWith % "window.PAGE_DATA") %) 
+                        (clojure.string/split-lines 
+                          (:body (client/get 
+                                   (str "https://clojuredocs.org/" n "/" v)
+                                   {:insecure? true
+                                    :socket-timeout 5000      
+                                    :conn-timeout 5000 
+                                    :retry-handler (fn [ex try-count http-context]
+                                                     (println "Got:" ex)
+                                                     false) }))))
+        page-data (subs page-data 18 (- (count page-data) 2))
+        page-data (.replace page-data "\\\"" "\"") 
+        page-data (.replace page-data "\\\"" "\"") 
+        page-data (.replace page-data "\\\\n" "\n") 
+        page-data (edn/read-string page-data )]
+    (println  (clojure.string/join " " (map #(str "(" (get-in page-data [:var :name]) " " % ")") (get-in page-data [:var :arglists]))))
+    (println "")
+    (println  (get-in page-data [:var :doc]))
+    (doseq [example (:examples page-data)]
+      (doseq [line (clojure.string/split (:body example) #"\\n")]
+        (println "\n==========================================================================\n")
+        (println line)))))
+
+
 (comment 
 
   (cheat-sheet 'clojure.java.io)
   (set-jdk-doc-loc! (File. "/Users/wangsn/jdk-7u80-docs-all.zip"))
   (show java.util.HashSet)
 
+  (cddoc "clojure.core" "assoc")
 )
+
+
+
 
